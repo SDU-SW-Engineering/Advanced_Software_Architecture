@@ -124,7 +124,7 @@ jobs:
       - name: Install LaTeX Extension
         run: |
           sudo apt-get install -y texlive-xetex
-          mkdir report
+          mkdir report/handin/
 
       - name: Compile LaTeX document
         run: |
@@ -139,7 +139,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: GroupReport-pdf 
-          path: report/
+          path: report/handin/
 
       
    # Job for compiling and uploading reflections-PDF from latex source files
@@ -174,7 +174,7 @@ jobs:
       - name: Install LaTeX Extension
         run: |
           sudo apt-get install -y texlive-xetex
-          mkdir report
+          mkdir report/handin/
 
       - name: Compile LaTeX document
         run: |
@@ -189,7 +189,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Reflections-pdf
-          path: report/
+          path: report/handin/
   
   # Job for creating handin artifact, this zip file will contain your repo, groupreportPDF, reflectionsPDF and build artifact if any
   upload-handin-artifacts:
