@@ -1,2 +1,2 @@
 #!/bin/bash
-docker compose -f docker-compose-latex.yml up
+docker compose -f repoort/docker-compose-latex.yml up
