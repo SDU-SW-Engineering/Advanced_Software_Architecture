@@ -133,7 +133,7 @@ jobs:
       
       - name: Rename PDF
         run: |
-          mv report/GroupTemplate/main.pdf report/report${{ env.GROUP_NUMBER }}.pdf
+          mv report/GroupTemplate/main.pdf report/handin/report${{ env.GROUP_NUMBER }}.pdf
       
       - name: Upload PDF
         uses: actions/upload-artifact@v3
@@ -183,7 +183,7 @@ jobs:
       
       - name: Rename PDF
         run: |
-          mv report/ReflectionsTemplate/main.pdf report/reflections${{ env.GROUP_NUMBER}}.pdf
+          mv report/ReflectionsTemplate/main.pdf report/handin/reflections${{ env.GROUP_NUMBER}}.pdf
   
       - name: Upload PDF
         uses: actions/upload-artifact@v3
