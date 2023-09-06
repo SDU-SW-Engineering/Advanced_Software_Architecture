@@ -108,14 +108,16 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      # Transform github.actor to lowercase
+      - name: Transform username to lowercase
+        run: echo "ACTOR_LOWER=$(echo ${{ github.actor }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
       # Building and pushing application image go to: GitHub -> Profile -> Packages 
       - name: Build & Push image
         uses: docker/build-push-action@v3
         with:
-          # Specify path to DockerFile
-          context: .
+          context: . #Path to your dockerfile
           push: true
-          tags: ghcr.io/${{ github.actor }}/${{ env.DOCKER_IMAGE_NAME }}:1.0-${{ github.sha }},ghcr.io/${{ github.actor }}/${{ env.DOCKER_IMAGE_NAME }}:latest
+          tags: ghcr.io/${{ env.ACTOR_LOWER }}/${{ env.DOCKER_IMAGE_NAME }}:1.0-${{ github.sha }},ghcr.io/${{ env.ACTOR_LOWER }}/${{ env.DOCKER_IMAGE_NAME }}:latest
 
   # Job for deploying the application i.e to VM  
   deploy-application:
