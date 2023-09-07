@@ -1,4 +1,4 @@
-# Advanced Software Engineering Portfolio Template
+# Advanced Software Architecture Portfolio Template
 
 - [Introduction](#introduction)
   - [.github](#github)
@@ -91,27 +91,31 @@ This option requires Docker to be installed and running.
 
 Here's how it works:
 
-Inside the `report` folder, there's a `docker-compose-latex.yml` file.
+Inside the `report` directory, there's a docker-compose-latex.yml file.
 
-- This docker-compose file will bind mount the `GroupTemplate` and `ReflectionsTemplate` folders.
-- A docker container will start, compile the latex source files, and then exit. The initial process might be time-consuming as it needs to create the image. However, subsequent compilations are faster.
+- This docker-compose file will create bind volumes for the `GroupTemplate` and `ReflectionsTemplate` folders.
+- A docker container will start, compile the latex source files, and then exit. The initial process might be a little time-consuming as it needs to create the image. However, afterwards compilations are faster.
 
-To manually run the `docker-compose-latex.yml`, use the command:
+To manually run the docker-compose-latex.yml and compile both latex documents, use the command:
 
 ```docker compose -f report/docker-compose-latex.yml up```
+or
+```docker compose -f report/docker-compose-latex.yml run latex```
 
-To run for a specific latex document i.e `GroupReport` or `Reflections` use these commands:
+To only compile a specific latex document i.e `GroupReport` or `Reflections` use these commands:
 
 ```docker compose -f report/docker-compose-latex.yml run latex reflection```
 or
 ```docker compose -f report/docker-compose-latex.yml run latex groupreport```
 
 #### Trigger Task on Save Extension
-If you're using VSCode, you can set up your latex files to compile upon saving. For this, download the `Trigger Task on Save` extension.
+If you're using VSCode, you can set up your latex files to compile upon saving.
+For this, download the `Trigger Task on Save` extension.
 
 ![Trigger Task on Save Extension](images/triggerTaskOnSave.png)
 
-This extension will trigger a task defined in `.vscode/tasks.json` every time you save a `.tex` file. The task will execute the `docker compose -f report/docker-compose-latex.yml run latex <parameter>` command, depending on the .tex file you are working on.
+This extension will trigger tasks defined in `.vscode/tasks.json` every time you save a `.tex` file.
+The task will execute the `docker compose -f report/docker-compose-latex.yml run latex` command with a parameter, depending on the .tex file you are working on.
 
 ### Option 3: Overleaf
 You are free to import the latex source files into Overleaf.
