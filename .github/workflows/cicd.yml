@@ -59,7 +59,7 @@ jobs:
   # Job for compiling applicaitons and uploading as an artifact
   build-application:
     runs-on: ubuntu-latest
-    needs: code-analysis
+    needs: clone-repository
     steps:
       - name: Download repository artifact
         uses: actions/download-artifact@v3
