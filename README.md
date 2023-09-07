@@ -98,7 +98,7 @@ Inside the `report` directory, there's a docker-compose-latex.yml file.
 
 To manually run the docker-compose-latex.yml and compile both latex documents, use the command:
 
-```docker compose -f report/docker-compose-latex.yml up```
+- ```docker compose -f report/docker-compose-latex.yml up```
 
 To only compile a specific latex document i.e `GroupReport` or `Reflections` use these commands:
 
