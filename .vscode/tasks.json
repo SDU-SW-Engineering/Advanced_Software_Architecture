@@ -4,7 +4,7 @@
     {
       "label": "Run Docker Compose for LaTeX",
       "type": "shell",
-      "command": "./report/latexUtils/platform-dependent-script.sh",
+      "command": "./report/latexUtils/compileLatex-windows.bat",
       "problemMatcher": [],
       "group": {
         "kind": "build",

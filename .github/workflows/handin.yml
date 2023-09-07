@@ -28,6 +28,9 @@ jobs:
   # Create artifact of repository source code to use for consistensy accross all jobs
   clone-repository:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.0.0
@@ -41,6 +44,9 @@ jobs:
   linting:
     runs-on: ubuntu-latest
     needs: clone-repository
+    permissions:
+      contents: read 
+    # Allow continuation of pipeline if linting fails
     continue-on-error: true
     steps:
       - name: Download repository artifact
@@ -52,11 +58,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y 
-          echo "install your-dependencies"
-      - name: Run Linter /Other Code Analysis tool
-        run: echo "Code analysis"
+          echo "install your-linting-dependencies"
+      - name: Run Linter / Other Code Analysis tool
+        run: echo "running linter"
 
-  # Job for building compiled applicaitons and upload a build artifact
+  # Job for compiling applicaitons and uploading as an artifact
   build-application:
     runs-on: ubuntu-latest
     needs: linting
@@ -66,21 +72,23 @@ jobs:
         with:
           name: repository-artifacts
           path: .
-      # Logic for building the applicaiton
+      # Your logic for building the applicaiton, language dependent
       - name: Build application
         run:  echo "build app"
-      # Upload created applicaiton artifact
+      # Upload compiled artifact
       - name: Upload Build artifact
         uses: actions/upload-artifact@v3
         with:
           name: build-artifact
-          path: . #REPLACE WITH PATH TO BUILD ARTIFACT IF ANY
+          path: ./src # Replace with path to your compiled artifact
   
   # Job for testing the application i.e 
   test-application:
     runs-on: ubuntu-latest
     needs: [build-application,linting]
-    # Allow pipeline to continue on error
+    permissions:
+      contents: read 
+    # Allow pipeline to continue on error in test-application step
     continue-on-error: true
     steps:
       # Download build artifact and use for applicaiton tests
@@ -89,10 +97,15 @@ jobs:
         with:
           name: build-artifact
           path: ./build
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y 
+          echo "install your-test-dependencies"
       - name: Test application
-        run: echo "test"
+        run: echo "run tests on build artifact"
 
-  # Job for compiling and uploading groupReport-PDF from latex source files
+  # Job for compiling groupReport-PDF from latex source files and uploading as artifact 
   compile-latex-groupReport:
     runs-on: ubuntu-latest
     needs: clone-repository
@@ -114,32 +127,32 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-texlive-
 
-      # Install LaTeX packages only if cache was not restored
+      # Install LaTeX texlive main packages only if cache was not restored
       - name: Install LaTeX packages
         if: steps.latex-cache.outputs.cache-hit != 'true'
         run: |
           sudo apt-get update
           sudo apt-get install -y texlive texlive-science
 
-      - name: Install LaTeX Extension
+      - name: Install LaTeX texlive-xetex Extension
         run: |
           sudo apt-get install -y texlive-xetex
-          mkdir report/handin/
-
+          mkdir handin/
+      # Compile the main.tex file
       - name: Compile LaTeX document
         run: |
           cd report/GroupTemplate
           xelatex -synctex=1 -interaction=nonstopmode main.tex
-      
-      - name: Rename PDF
+      # Rename and move the compiled file to handin folder in root
+      - name: Rename compiled PDF
         run: |
-          mv report/GroupTemplate/main.pdf report/handin/report${{ env.GROUP_NUMBER }}.pdf
+          mv report/GroupTemplate/main.pdf handin/report${{ env.GROUP_NUMBER }}.pdf
       
-      - name: Upload PDF
+      - name: Upload GroupReport-pdf artifact
         uses: actions/upload-artifact@v3
         with:
           name: GroupReport-pdf 
-          path: report/handin/
+          path: handin/
 
       
    # Job for compiling and uploading reflections-PDF from latex source files
@@ -174,22 +187,24 @@ jobs:
       - name: Install LaTeX Extension
         run: |
           sudo apt-get install -y texlive-xetex
-          mkdir report/handin/
+          mkdir handin/
 
+      # Compile the main.tex file
       - name: Compile LaTeX document
         run: |
           cd report/ReflectionsTemplate
           xelatex -synctex=1 -interaction=nonstopmode main.tex
-      
-      - name: Rename PDF
+
+      # Rename and move the compiled file to handin folder in root
+      - name: Rename compiled PDF
         run: |
-          mv report/ReflectionsTemplate/main.pdf report/handin/reflections${{ env.GROUP_NUMBER}}.pdf
+          mv report/ReflectionsTemplate/main.pdf handin/reflections${{ env.GROUP_NUMBER}}.pdf
   
-      - name: Upload PDF
+      - name: Upload Reflections-pdf artifact
         uses: actions/upload-artifact@v3
         with:
           name: Reflections-pdf
-          path: report/handin/
+          path: handin/
   
   # Job for creating handin artifact, this zip file will contain your repo, groupreportPDF, reflectionsPDF and build artifact if any
   upload-handin-artifacts:
@@ -213,13 +228,13 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: GroupReport-pdf
-          path: ./report
+          path: ./handin
       # Download Reflections PDF and place in ./report folder
       - name: Download Reflections
         uses: actions/download-artifact@v3
         with:
           name: Reflections-pdf
-          path: ./report
+          path: ./handin
       # Upload final handin artifcat, can be downloaded from Repository -> Actions -> handin-workflow -> Scroll down and click
       - name: Upload handin artifacts
         uses: actions/upload-artifact@v3
