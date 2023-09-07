@@ -99,14 +99,11 @@ Inside the `report` directory, there's a docker-compose-latex.yml file.
 To manually run the docker-compose-latex.yml and compile both latex documents, use the command:
 
 ```docker compose -f report/docker-compose-latex.yml up```
-or
-```docker compose -f report/docker-compose-latex.yml run latex```
 
 To only compile a specific latex document i.e `GroupReport` or `Reflections` use these commands:
 
-```docker compose -f report/docker-compose-latex.yml run latex reflection```
-or
-```docker compose -f report/docker-compose-latex.yml run latex groupreport```
+- ```docker compose -f report/docker-compose-latex.yml run latex reflection```
+- ```docker compose -f report/docker-compose-latex.yml run latex groupreport```
 
 #### Trigger Task on Save Extension
 If you're using VSCode, you can set up your latex files to compile upon saving.
