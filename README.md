@@ -14,6 +14,7 @@
     - [Link to download TeX Live](#link-to-download-tex-live)
   - [Option 2: Trigger Task on Save + Docker](#option-2-trigger-task-on-save--docker)
     - [Compilation of latex on save](#compilation-of-latex-on-save)
+  - [Option 3: Overleaf](#option-3-overleaf)
 
 ## Introduction
 This repository serves as a template for students of Advanced Software Engineering to structure their portfolio project.
@@ -66,7 +67,7 @@ This folder contains a task file and a settings file. These are used to compile 
 This directory contains the latex source files essential for the group report and the reflections document.
 
 ### Src
-While currently empty, this folder is intended for organizing and storing all your code.
+This folder is intended for organizing and storing all your code.
 
 ## Compiling Latex
 You can compile latex source files to PDF locally. Multiple options are available; choose the one you prefer.
@@ -96,6 +97,12 @@ Inside the `report` folder, there's a `docker-compose-latex.yml` file.
 To manually run the `docker-compose-latex.yml`, use the command:
 
 ```docker compose -f report/docker-compose-latex.yml up```
+
+To run for a specific latex document i.e `GroupReport` or `Reflections` use these commands:
+
+```docker compose -f report/docker-compose-latex.yml run latex reflection```
+or
+```docker compose -f report/docker-compose-latex.yml run latex groupreport```
 
 #### Trigger Task on Save Extension
 If you're using VSCode, you can set up your latex files to compile upon saving. For this, download the `Trigger Task on Save` extension.

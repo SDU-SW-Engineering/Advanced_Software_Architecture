@@ -1,2 +1,1 @@
-#!/bin/bash
-docker compose -f repoort/docker-compose-latex.yml up
+docker compose -f report/docker-compose-latex.yml run latex

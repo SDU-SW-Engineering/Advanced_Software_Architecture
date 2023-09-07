@@ -10,8 +10,11 @@
     }
   },
   "triggerTaskOnSave.tasks": {
-    "Run Docker Compose for LaTeX": [
-      "*.tex", // <-- Glob pattern to specify which files should trigger the task
+    "Run Docker Compose for LaTeX GroupReport": [
+      "report/GroupTemplate/*.tex",
     ],
-  }
+    "Run Docker Compose for LaTeX Reflections": [
+      "report/ReflectionsTemplate/*.tex",
+    ],
+  },
 }

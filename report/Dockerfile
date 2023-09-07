@@ -14,4 +14,4 @@ RUN apt-get update -q && \
 
 COPY ./latexUtils/compile.sh .
 RUN chmod +x /compile.sh
-CMD ["/compile.sh"]
+ENTRYPOINT ["/compile.sh"]
