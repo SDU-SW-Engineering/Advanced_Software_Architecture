@@ -1,7 +1,6 @@
 # Advanced Software Engineering Portfolio Template
 
 - [Introduction](#introduction)
-- [Structure](#structure)
   - [.github](#github)
     - [CI/CD Workflow](#cicd-workflow)
     - [Hand in Workflow](#hand-in-workflow)
@@ -19,8 +18,7 @@
 ## Introduction
 This repository serves as a template for students of Advanced Software Engineering to structure their portfolio project.
 
-## Structure
-Below is the detailed overview of the structure:
+Below is the detailed overview of the repository structure:
 
 <pre>
 .
@@ -38,36 +36,40 @@ Below is the detailed overview of the structure:
 └── .gitignore
 </pre>
 
-### .github
+## .github
 This folder contains template workflows designed for CI/CD processes and for generating the final submission artifacts.
 
-#### CI/CD Workflow
+### CI/CD Workflow
 The CI/CD workflow is split into several jobs:
 
-- **Clone repository**: This job clones the repository, creates an artifact from it, and then uploads this artifact, ensuring consistency across all jobs.
+![cicdworkflow](images/cicdworkflow.png)
+
+- **Clone repository**: Clones the repository, creates an artifact from it, and then uploads this artifact, ensuring consistency across all jobs.
 - **Code analysis**: Utilize this job for linting or any other static code analysis tools you'd like to incorporate.
 - **Build application**: Compile the source code. After compiling, the artifact is uploaded for easy accessibility, aiding in debugging and local testing.
 - **Test application**: Run tests that require the code to be compiled. This step downloads the compiled artifact created in the previous step.
-- **Build and push image**: This job builds an image using a specified `DockerFile` and pushes the image to the GitHub container registry specific to the repository owner.
-- **Deploy application**: Deploy the image(s) generated during the workflow onto your virtual machines.
+- **Build and push image**: Builds an image using a specified `DockerFile` and pushes the image to the GitHub container registry specific to the repository owner.
+- **Deploy application**: Can be used to deploy the image(s) generated during the workflow onto your virtual machines.
 
-#### Hand in Workflow
+### Hand in Workflow
 The hand-in workflow includes some of the jobs from the CI/CD workflow and some additional ones:
 
-- **Compile latex groupReport**: This job compiles the latex source files for the group report and places the output in a hand-in folder.
-- **Compile latex groupReport**: This job compiles the latex source files for the reflections document and places the output in a hand-in folder.
-- **Upload hand-in artifacts**: This job creates a zip file containing the Group Report, the Reflections Document, the source code, and any build artifacts. The zip can be downloaded by navigating to Repository > Actions > The completed hand-in workflow.
+![Alt text](images/handinworkflow.png)
+
+- **Compile latex groupReport**: This job compiles the latex source files for the group report and upload the output as an artifact.
+- **Compile latex groupReport**: This job compiles the latex source files for the reflections document and upload the output as an artifact.
+- **Upload hand-in artifacts**: This job creates a zip file containing the Group Report, the Reflections Document, the source code, and any build artifacts. The zip can be downloaded by navigating to Repository > Actions > The completed hand-in workflow as shown in the image below.
 
 ![Workflow Artifacts](images/artifacts.png)
-
-### .vscode
-This folder contains a task file and a settings file. These are used to compile latex source files whenever a save action is performed on a `.tex` file. To utilize this feature, use VSCode and ensure you've installed the `Trigger Task on Save` extension.
 
 ### Report
 This directory contains the latex source files essential for the group report and the reflections document.
 
+The directory latexUtils contains scripts for compiling LaTeX locally using docker, you do not need to change anything in these files, but you are welcome to do so if you want to.
+
 ### Src
-This folder is intended for organizing and storing all your code.
+This folder is intended for organizing and storing all your source code. You decide on the structure but please keep everything source code related inside `./src`.
+You are allowed to have your DockerFiles at root level for build context reasons, as the example DockerFile provided.
 
 ## Compiling Latex
 You can compile latex source files to PDF locally. Multiple options are available; choose the one you prefer.
@@ -109,7 +111,7 @@ If you're using VSCode, you can set up your latex files to compile upon saving. 
 
 ![Trigger Task on Save Extension](images/triggerTaskOnSave.png)
 
-This extension will trigger the task defined in `.vscode/tasks.json` every time you save a `.tex` file. The task will execute the `docker compose -f report/docker-compose-latex.yml up` command.
+This extension will trigger a task defined in `.vscode/tasks.json` every time you save a `.tex` file. The task will execute the `docker compose -f report/docker-compose-latex.yml run latex <parameter>` command, depending on the .tex file you are working on.
 
 ### Option 3: Overleaf
 You are free to import the latex source files into Overleaf.
