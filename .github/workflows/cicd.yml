@@ -13,70 +13,73 @@ on:
 
   # Environment Variables
 env:
+  PACKAGE_REGISTRY_TO_USE: nico8034
   DOCKER_IMAGE_NAME: lowercase-image-name
   PROJECT_NAME: ProjectName
-  GROUP_NUMBER: GroupNumber #I.e  Group02 
+  GROUP_NUMBER: GroupNumber #I.e  Group02
 
 jobs:
-  # Job for creating an artifact of repository source code to use for consistensy accross all jobs
+  # Create artifact of repository source code to use for consistensy accross all jobs
   clone-repository:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.0.0
-
       - name: Upload Repository artifacts
         uses: actions/upload-artifact@v3
         with:
           name: repository-artifacts
           path: .
 
-  # Job for performing linting and/or other static code analysis
-  linting:
+  # Perform linting and/or other static code analysis
+  code-analysis:
     runs-on: ubuntu-latest
     needs: clone-repository
+    permissions:
+      contents: read 
+    # Allow continuation of pipeline if linting fails
+    continue-on-error: true
     steps:
       - name: Download repository artifact
         uses: actions/download-artifact@v3
         with:
           name: repository-artifacts
           path: .
-        # Install tools needed for static code analysis depending on programming language
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y 
-          echo "install your linter & code analysis tools of choice"
-      - name: Linter
-        run: echo "run linter"
-      - name: Code Analysis
-        run: echo "run code analysis"
+          echo "install your-linting-dependencies"
+      - name: Run Linter / Other Code Analysis tool
+        run: echo "running linter"
   
-  # Job for building compiled applicaitons and upload a build artifact
+  # Job for compiling applicaitons and uploading as an artifact
   build-application:
     runs-on: ubuntu-latest
-    needs: clone-repository
+    needs: code-analysis
     steps:
       - name: Download repository artifact
         uses: actions/download-artifact@v3
         with:
           name: repository-artifacts
           path: .
-      # Logic for building the applicaiton
+      # Your logic for building the applicaiton, language dependent
       - name: Build application
         run:  echo "build app"
-
-      # Upload created applicaiton artifact
+      # Upload compiled artifact
       - name: Upload Build artifact
         uses: actions/upload-artifact@v3
         with:
           name: build-artifact
-          path: . #REPLACE WITH PATH TO BUILD ARTIFACT IF ANY
+          path: ./src # Replace with path to your compiled artifact
   
   # Job for testing the application i.e 
   test-application:
     runs-on: ubuntu-latest
-    needs: [build-application,linting]
+    needs: [build-application,code-analysis]
     # Allow pipeline to continue on error
     continue-on-error: true
     steps:
@@ -104,22 +107,22 @@ jobs:
       - name: Login to GitHub Package Registry
         uses: docker/login-action@v2
         with:
-          # Using GitHub Registry, could be changed dockerhub
+          # Authenticate with GitHub Container Registry, could be changed to use DockerHub
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       # Transform github.actor to lowercase
       - name: Transform username to lowercase
-        run: echo "ACTOR_LOWER=$(echo ${{ github.actor }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+        run: echo "OWNER_LOWER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
       # Building and pushing application image go to: GitHub -> Profile -> Packages 
       - name: Build & Push image
         uses: docker/build-push-action@v3
         with:
           context: . #Path to your dockerfile
           push: true
-          tags: ghcr.io/${{ env.ACTOR_LOWER }}/${{ env.DOCKER_IMAGE_NAME }}:1.0-${{ github.sha }},ghcr.io/${{ env.ACTOR_LOWER }}/${{ env.DOCKER_IMAGE_NAME }}:latest
+          tags: ghcr.io/${{ env.OWNER_LOWER }}/${{ env.DOCKER_IMAGE_NAME }}:1.0-${{ github.sha }},ghcr.io/${{ env.OWNER_LOWER }}/${{ env.DOCKER_IMAGE_NAME }}:latest
 
-  # Job for deploying the application i.e to VM  
+  # Job for deploying the application, could be the logic for deploying to your VM  
   deploy-application:
     runs-on: ubuntu-latest
     needs: [build-push-docker-image]
