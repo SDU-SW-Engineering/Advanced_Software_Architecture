@@ -14,5 +14,6 @@ RUN apt-get update -q && \
   rm -rf /var/lib/apt/lists/*
 
 COPY ./latexUtils/compile.sh .
+RUN sed -i 's/\r$//' compile.sh
 RUN chmod +x compile.sh
 ENTRYPOINT ["bash", "compile.sh"]
