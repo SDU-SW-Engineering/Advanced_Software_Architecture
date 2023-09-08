@@ -5,6 +5,7 @@ FROM ubuntu:latest
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Your other settings here, e.g.,
+WORKDIR /app
 
 # Install LaTeX packages without interaction
 RUN apt-get update -q && \
@@ -13,5 +14,5 @@ RUN apt-get update -q && \
   rm -rf /var/lib/apt/lists/*
 
 COPY ./latexUtils/compile.sh .
-RUN chmod +x /compile.sh
-ENTRYPOINT ["/compile.sh"]
+RUN chmod +x compile.sh
+ENTRYPOINT ["bash", "compile.sh"]
