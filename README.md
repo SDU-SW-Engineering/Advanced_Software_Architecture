@@ -14,6 +14,7 @@
   - [Option 2: Trigger Task on Save + Docker](#option-2-trigger-task-on-save--docker)
     - [Compilation of latex on save](#compilation-of-latex-on-save)
   - [Option 3: Overleaf](#option-3-overleaf)
+- [Recommended VSCode Extension](#recommended-vscode-extension)
 
 ## Introduction
 This repository serves as a template for students of Advanced Software Engineering to structure their portfolio project.
@@ -118,3 +119,14 @@ The task will execute the `docker compose -f report/docker-compose-latex.yml run
 You are free to import the latex source files into Overleaf.
 - If you use this method, you could export the source files from overleaf when done with the report and reflections document.
 - By placing the source files into their respective folders `repot/GroupTemplate` and `report/ReflectionsTemplate` you can still take advantage of the handin workflow when creating your final hand in artifact.
+
+## Recommended VSCode Extension
+
+### GitHub Actions
+
+- GitHub workflow documentation
+- Auto completion
+- Overview of workflow runs directly from VSCode
+
+![Alt text](images/githubactions.png)
+
